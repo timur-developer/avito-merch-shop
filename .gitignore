@@ -1,0 +1,16 @@
+bin/
+*.exe
+*.test
+*.out
+
+.env
+.env.local
+
+.idea/
+*.swp
+
+.DS_Store
+
+*.log
+
+postgres-data/
