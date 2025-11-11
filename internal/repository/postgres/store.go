@@ -4,11 +4,20 @@ import (
 	"avito-merch-shop/config"
 	"context"
 	"github.com/Masterminds/squirrel"
+	"github.com/jackc/pgx/v5"
+	"github.com/jackc/pgx/v5/pgconn"
 	"github.com/jackc/pgx/v5/pgxpool"
 )
 
+type QueryExecutor interface {
+	QueryRow(ctx context.Context, sql string, args ...interface{}) pgx.Row
+	Exec(ctx context.Context, sql string, args ...interface{}) (pgconn.CommandTag, error)
+	Ping(ctx context.Context) error
+	Close()
+}
+
 type Store struct {
-	pool *pgxpool.Pool
+	pool QueryExecutor
 	sb   squirrel.StatementBuilderType
 }
 
@@ -28,7 +37,7 @@ func NewStore(cfg *config.Config) (*Store, error) {
 	}, nil
 }
 
-func (s *Store) Pool() *pgxpool.Pool {
+func (s *Store) Pool() QueryExecutor {
 	return s.pool
 }
 
